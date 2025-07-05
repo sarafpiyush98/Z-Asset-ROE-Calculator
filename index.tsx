@@ -1,3 +1,4 @@
+
 import React, { useState, useMemo } from 'react';
 import ReactDOM from 'react-dom/client';
 
@@ -346,11 +347,16 @@ const App = () => {
                     background-color: var(--bg-color);
                     color: var(--text-color);
                     padding: 2rem;
-                    position: relative;
-                    overflow-x: hidden;
                 }
 
-                body::before, body::after {
+                .app-container { 
+                    max-width: 1300px; 
+                    margin: 0 auto; 
+                    position: relative;
+                    overflow: hidden;
+                }
+
+                .app-container::before, .app-container::after {
                     content: '';
                     position: absolute;
                     z-index: -1;
@@ -360,21 +366,20 @@ const App = () => {
                     border-radius: 50%;
                 }
 
-                body::before {
+                .app-container::before {
                     background: radial-gradient(circle, rgba(var(--accent-color-rgb), 0.2), transparent 70%);
                     top: -100px;
                     left: -200px;
                     animation: move-glow 25s infinite ease-in-out;
                 }
 
-                body::after {
+                .app-container::after {
                     background: radial-gradient(circle, rgba(100, 80, 255, 0.15), transparent 70%);
                     bottom: -150px;
                     right: -250px;
                     animation: move-glow-2 30s infinite ease-in-out;
                 }
-
-                .app-container { max-width: 1300px; margin: 0 auto; }
+                
                 .header { text-align: center; margin-bottom: 3rem; animation: slideInUp 0.6s ease-out, fadeIn 0.6s ease-out; }
                 
                 .z-logo {
@@ -484,7 +489,7 @@ const App = () => {
                 .accordion-content { overflow: hidden; max-height: 0; transition: max-height 0.5s ease-in-out, padding-top 0.5s ease; }
                 .accordion.open .accordion-content { max-height: 500px; padding-top: 1.5rem; }
 
-                .details-table-container { max-height: 400px; overflow-y: auto; border: 1px solid var(--border-color); border-radius: 8px; background: rgba(0,0,0,0.2); }
+                .details-table-container { max-height: 400px; overflow: auto; border: 1px solid var(--border-color); border-radius: 8px; background: rgba(0,0,0,0.2); }
                 .details-table { width: 100%; border-collapse: collapse; text-align: right; }
                 .details-table th, .details-table td { padding: 0.85rem 1rem; border-bottom: 1px solid var(--border-color); font-size: 0.9rem; white-space: nowrap; }
                 .details-table th { position: sticky; top: 0; background-color: rgba(28, 33, 40, 0.8); backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px); font-weight: 600; color: var(--label-color); text-align: right; }
@@ -515,7 +520,7 @@ const App = () => {
                     filter: brightness(1.1);
                 }
 
-                @media (max-width: 1200px) { 
+                @media (max-width: 1024px) { 
                     .main-layout { 
                         grid-template-columns: 1fr; 
                         gap: 1.5rem;
@@ -533,13 +538,21 @@ const App = () => {
                     .panel { padding: 1.5rem; }
                 }
                 @media (max-width: 600px) { 
+                    .header { margin-bottom: 2rem; }
+                    .z-logo { font-size: 2.2rem; }
                     .stats-grid { 
                         grid-template-columns: 1fr;
                         gap: 1rem;
                      } 
                     .stat-value { font-size: 2rem; }
-                    .header { margin-bottom: 2rem; }
-                    .z-logo { font-size: 2.2rem; }
+                    .output-row {
+                        flex-direction: column;
+                        align-items: flex-start;
+                        gap: 0.25rem;
+                        padding: 0.75rem 0;
+                    }
+                    .output-row > label { font-size: 0.95rem; }
+                    .output-row > span { font-size: 1rem; }
                 }
             `),
         React.createElement("div", { className: "app-container" },
