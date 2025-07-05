@@ -1,5 +1,4 @@
-
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, PropsWithChildren } from 'react';
 import ReactDOM from 'react-dom/client';
 
 // --- Helper Functions ---
@@ -33,84 +32,69 @@ const calculateXirr = (cashflows, guess = 0.1) => {
     return NaN;
 };
 
-// --- Helper Components ---
+// --- Helper Components (Compiled to JS) ---
 
-const ZAssetsLogo = () => (
-    <h1 className="z-logo" aria-label="Z-Assets">
-      Z-
-      <span className="z-logo-a">A</span>
-      SSE<span className="z-logo-special-char">T</span>S
-    </h1>
-);
+const ZAssetsLogo = () => React.createElement("h1", {
+    className: "z-logo",
+    "aria-label": "Z-Assets"
+}, "Z-", React.createElement("span", {
+    className: "z-logo-a"
+}, "A"), "SSE", React.createElement("span", {
+    className: "z-logo-special-char"
+}, "T"), "S");
 
-const NumberInput = ({ label, value, onChange, unit, helpText = null, min, max, step }) => (
-    <div className="input-row">
-        <label htmlFor={label}>
-            {label}
-            {helpText && <span className="help-text">{helpText}</span>}
-        </label>
-        <div className="input-container">
-            <input
-                id={label}
-                type="number"
-                value={value}
-                onChange={onChange}
-                min={min}
-                max={max}
-                step={step}
-                aria-label={label}
-            />
-            {unit && <span className="unit">{unit}</span>}
-        </div>
-    </div>
-);
+const NumberInput = ({ label, value, onChange, unit, helpText = null, min, max, step }) => React.createElement("div", {
+    className: "input-row"
+}, React.createElement("label", {
+    htmlFor: label
+}, label, helpText && React.createElement("span", {
+    className: "help-text"
+}, helpText)), React.createElement("div", {
+    className: "input-container"
+}, React.createElement("input", {
+    id: label,
+    type: "number",
+    value: value,
+    onChange: onChange,
+    min: min,
+    max: max,
+    step: step,
+    "aria-label": label
+}), unit && React.createElement("span", {
+    className: "unit"
+}, unit)));
 
 
-const StatCard = ({ label, value, helpText, primary = false }) => (
-    <div className={`stat-card ${primary ? 'primary' : ''}`} title={helpText}>
-        <div className="stat-label">{label}</div>
-        <div className="stat-value">{value}</div>
-    </div>
-);
+const StatCard = ({ label, value, helpText, primary = false }) => React.createElement("div", {
+    className: `stat-card ${primary ? 'primary' : ''}`,
+    title: helpText
+}, React.createElement("div", {
+    className: "stat-label"
+}, label), React.createElement("div", {
+    className: "stat-value"
+}, value));
 
-const DetailsTable = ({ data, formatCurrency, formatPercent }) => (
-    <div className="details-table-container">
-        <table className="details-table">
-            <thead>
-                <tr>
-                    <th>Month</th>
-                    <th>EMI</th>
-                    <th>Rent</th>
-                    <th>Net Payment</th>
-                    <th>Gross Yield</th>
-                </tr>
-            </thead>
-            <tbody>
-                {data.map(row => (
-                    <tr key={row.month}>
-                        <td>{row.month}</td>
-                        <td>{formatCurrency(row.emi)}</td>
-                        <td>{formatCurrency(row.rent)}</td>
-                        <td>{formatCurrency(row.netEmi)}</td>
-                        <td>{formatPercent(row.annualizedRoi)}</td>
-                    </tr>
-                ))}
-            </tbody>
-        </table>
-    </div>
-);
+const DetailsTable = ({ data, formatCurrency, formatPercent }) => React.createElement("div", {
+    className: "details-table-container"
+}, React.createElement("table", {
+    className: "details-table"
+}, React.createElement("thead", null, React.createElement("tr", null, React.createElement("th", null, "Month"), React.createElement("th", null, "EMI"), React.createElement("th", null, "Rent"), React.createElement("th", null, "Net Payment"), React.createElement("th", null, "Gross Yield"))), React.createElement("tbody", null, data.map(row => React.createElement("tr", {
+    key: row.month
+}, React.createElement("td", null, row.month), React.createElement("td", null, formatCurrency(row.emi)), React.createElement("td", null, formatCurrency(row.rent)), React.createElement("td", null, formatCurrency(row.netEmi)), React.createElement("td", null, formatPercent(row.annualizedRoi)))))));
 
-const Accordion = ({ title, children }) => {
+const Accordion = ({ title, children }: PropsWithChildren<{ title: string }>) => {
     const [isOpen, setIsOpen] = useState(false);
-    return (
-        <div className={`accordion ${isOpen ? 'open' : ''}`}>
-            <button className="accordion-header" onClick={() => setIsOpen(!isOpen)} aria-expanded={isOpen}>
-                <span>{title}</span>
-                <span className="accordion-icon">›</span>
-            </button>
-            <div className="accordion-content">{children}</div>
-        </div>
-    );
+    return React.createElement("div", {
+        className: `accordion ${isOpen ? 'open' : ''}`
+    }, React.createElement("button", {
+        className: "accordion-header",
+        onClick: () => setIsOpen(!isOpen),
+        "aria-expanded": isOpen
+    }, React.createElement("span", null, title), React.createElement("span", {
+        className: "accordion-icon"
+    }, "\u203A")), React.createElement("div", {
+        className: "accordion-content"
+    }, children));
 };
 
 // --- Main Application ---
@@ -320,19 +304,19 @@ const App = () => {
     };
 
 
-    return (
-        <>
-            <style>{`
+    return React.createElement(
+        React.Fragment,
+        null,
+        React.createElement("style", null, `
                 :root {
-                    --bg-color: #111827; /* Deep dark blue */
-                    --card-bg: #1F2937; /* Muted dark blue/gray */
-                    --text-color: #E5E7EB; /* Off-white */
-                    --label-color: #9CA3AF; /* Lighter gray */
-                    --border-color: #374151; /* Subtle border */
-                    --accent-color-1: #00D1FF; /* Z-Assets Bright Blue */
-                    --accent-color-2: #00AEEF; /* Z-Assets Darker Blue */
-                    --accent-color-rgb: 0, 209, 255;
-                    --shadow-color: rgba(0,0,0,0.2);
+                    --bg-color: #0D1117;
+                    --text-color: #E6EDF3;
+                    --label-color: #8D96A0;
+                    --accent-color-1: #30A8FF;
+                    --accent-color-2: #007BFF;
+                    --accent-color-rgb: 48, 168, 255;
+                    --panel-bg: rgba(22, 27, 34, 0.6);
+                    --border-color: rgba(255, 255, 255, 0.1);
                     --font-family: 'Inter', sans-serif;
                 }
 
@@ -344,15 +328,52 @@ const App = () => {
                     from { transform: translateY(20px); opacity: 0; }
                     to { transform: translateY(0); opacity: 1; }
                 }
+                 @keyframes move-glow {
+                    0% { transform: translate(0, 0); }
+                    50% { transform: translate(100px, 150px); }
+                    100% { transform: translate(0, 0); }
+                }
+
+                @keyframes move-glow-2 {
+                    0% { transform: translate(0, 0) rotate(180deg); }
+                    50% { transform: translate(-150px, -100px) rotate(180deg); }
+                    100% { transform: translate(0, 0) rotate(180deg); }
+                }
 
                 body {
                     margin: 0;
                     font-family: var(--font-family);
                     background-color: var(--bg-color);
-                    background-image: radial-gradient(circle at top, rgba(255,255,255,0.03), transparent 40%);
                     color: var(--text-color);
                     padding: 2rem;
+                    position: relative;
+                    overflow-x: hidden;
                 }
+
+                body::before, body::after {
+                    content: '';
+                    position: absolute;
+                    z-index: -1;
+                    width: 500px;
+                    height: 500px;
+                    filter: blur(150px);
+                    border-radius: 50%;
+                }
+
+                body::before {
+                    background: radial-gradient(circle, rgba(var(--accent-color-rgb), 0.2), transparent 70%);
+                    top: -100px;
+                    left: -200px;
+                    animation: move-glow 25s infinite ease-in-out;
+                }
+
+                body::after {
+                    background: radial-gradient(circle, rgba(100, 80, 255, 0.15), transparent 70%);
+                    bottom: -150px;
+                    right: -250px;
+                    animation: move-glow-2 30s infinite ease-in-out;
+                }
+
                 .app-container { max-width: 1300px; margin: 0 auto; }
                 .header { text-align: center; margin-bottom: 3rem; animation: slideInUp 0.6s ease-out, fadeIn 0.6s ease-out; }
                 
@@ -360,8 +381,8 @@ const App = () => {
                     font-family: 'Inter', sans-serif;
                     font-weight: 800;
                     font-size: 3.5rem;
-                    color: var(--accent-color-1);
-                    text-shadow: 0 0 15px rgba(var(--accent-color-rgb), 0.35);
+                    color: #fff;
+                    text-shadow: 0 0 10px rgba(var(--accent-color-rgb), 0.5), 0 0 20px rgba(var(--accent-color-rgb), 0.3);
                     letter-spacing: 0.08em;
                     margin-bottom: 1rem;
                     filter: drop-shadow(0 2px 3px rgba(0,0,0,0.4));
@@ -369,8 +390,9 @@ const App = () => {
                 }
                 .z-logo-a {
                     position: relative;
+                    color: var(--accent-color-1);
                 }
-                .z-logo-a::before { /* Keyhole circle */
+                .z-logo-a::before {
                     content: '';
                     position: absolute;
                     top: 50%;
@@ -382,7 +404,7 @@ const App = () => {
                     transform: translate(-50%, -80%);
                     z-index: 1;
                 }
-                .z-logo-a::after { /* Keyhole bottom */
+                .z-logo-a::after {
                     content: '';
                     position: absolute;
                     top: 50%;
@@ -394,16 +416,19 @@ const App = () => {
                     z-index: 1;
                 }
 
+                .header h1 { font-size: 1.8rem; font-weight: 700; color: var(--text-color); margin: 0 0 0.5rem 0; }
                 .header p { font-size: 1.1rem; color: var(--label-color); margin-top: -0.5rem; max-width: 600px; margin-left: auto; margin-right: auto; }
                 
                 .main-layout { display: grid; grid-template-columns: 400px 1fr; gap: 2rem; align-items: flex-start; }
                 
                 .panel {
-                    background: var(--card-bg);
+                    background: var(--panel-bg);
                     border-radius: 16px;
                     border: 1px solid var(--border-color);
                     padding: 2rem;
-                    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+                    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+                    backdrop-filter: blur(18px);
+                    -webkit-backdrop-filter: blur(18px);
                     animation: slideInUp 0.6s ease-out 0.2s, fadeIn 0.6s ease-out 0.2s;
                     animation-fill-mode: backwards;
                 }
@@ -416,7 +441,7 @@ const App = () => {
                 label { font-weight: 500; color: var(--label-color); font-size: 0.9rem; }
                 .help-text { display: inline-block; font-size: 0.8rem; color: #6B7280; font-weight: 400; margin-left: 8px; }
 
-                .input-container { display: flex; align-items: center; background-color: var(--bg-color); border: 1px solid var(--border-color); border-radius: 8px; transition: all 0.2s; }
+                .input-container { display: flex; align-items: center; background-color: rgba(0,0,0,0.2); border: 1px solid var(--border-color); border-radius: 8px; transition: all 0.2s; }
                 .input-container:focus-within {
                     border-color: var(--accent-color-1);
                     box-shadow: 0 0 0 3px rgba(var(--accent-color-rgb), 0.2);
@@ -427,15 +452,19 @@ const App = () => {
                 .unit { padding-right: 1rem; color: var(--label-color); font-weight: 500; white-space: nowrap; }
 
                 .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
-                .stat-card { background: var(--card-bg); padding: 1.5rem; border-radius: 12px; border: 1px solid var(--border-color); transition: transform 0.2s, box-shadow 0.2s; }
-                .stat-card:hover { transform: translateY(-4px); box-shadow: 0 8px 20px rgba(0,0,0,0.25); }
-                .stat-card.primary {
-                    background-image: linear-gradient(to right, var(--accent-color-1), var(--accent-color-2));
-                    border-color: var(--accent-color-1);
-                    color: white;
+                .stat-card {
+                    background: var(--panel-bg);
+                    padding: 1.5rem; border-radius: 12px;
+                    border: 1px solid var(--border-color);
+                    backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+                    transition: transform 0.2s, box-shadow 0.2s;
                 }
-                .stat-card.primary .stat-label { color: rgba(255,255,255,0.85); }
-                .stat-card.primary .stat-value { color: white; }
+                .stat-card:hover { transform: translateY(-4px); box-shadow: 0 8px 25px rgba(0,0,0,0.3); }
+                .stat-card.primary {
+                    background: linear-gradient(135deg, rgba(var(--accent-color-rgb), 0.2), rgba(var(--accent-color-rgb), 0.1));
+                    border-color: rgba(var(--accent-color-rgb), 0.5);
+                }
+                .stat-card.primary .stat-value { color: var(--accent-color-1); text-shadow: 0 0 8px rgba(var(--accent-color-rgb), 0.3); }
                 
                 .stat-label { font-size: 1rem; color: var(--label-color); margin-bottom: 0.5rem; font-weight: 500; }
                 .stat-value { font-size: 2.5rem; font-weight: 700; color: var(--text-color); line-height: 1; }
@@ -455,10 +484,10 @@ const App = () => {
                 .accordion-content { overflow: hidden; max-height: 0; transition: max-height 0.5s ease-in-out, padding-top 0.5s ease; }
                 .accordion.open .accordion-content { max-height: 500px; padding-top: 1.5rem; }
 
-                .details-table-container { max-height: 400px; overflow-y: auto; border: 1px solid var(--border-color); border-radius: 8px; background-color: var(--bg-color); }
+                .details-table-container { max-height: 400px; overflow-y: auto; border: 1px solid var(--border-color); border-radius: 8px; background: rgba(0,0,0,0.2); }
                 .details-table { width: 100%; border-collapse: collapse; text-align: right; }
                 .details-table th, .details-table td { padding: 0.85rem 1rem; border-bottom: 1px solid var(--border-color); font-size: 0.9rem; white-space: nowrap; }
-                .details-table th { position: sticky; top: 0; background-color: #2a3547; font-weight: 600; color: var(--label-color); text-align: right; }
+                .details-table th { position: sticky; top: 0; background-color: rgba(28, 33, 40, 0.8); backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px); font-weight: 600; color: var(--label-color); text-align: right; }
                 .details-table th:first-child, .details-table td:first-child { text-align: left; }
                 .details-table tbody tr:last-child td { border-bottom: none; }
                 .details-table tbody tr:hover { background-color: rgba(var(--accent-color-rgb), 0.1); }
@@ -470,11 +499,11 @@ const App = () => {
                     font-weight: 600;
                     color: white;
                     background-image: linear-gradient(to right, var(--accent-color-1), var(--accent-color-2));
-                    border: none;
+                    border: 1px solid rgba(var(--accent-color-rgb), 0.5);
                     border-radius: 8px;
                     cursor: pointer;
                     transition: all 0.2s;
-                    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+                    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
                     display: flex;
                     align-items: center;
                     justify-content: center;
@@ -482,7 +511,8 @@ const App = () => {
                 }
                 .download-button:hover {
                     transform: translateY(-2px);
-                    box-shadow: 0 6px 15px rgba(var(--accent-color-rgb), 0.3);
+                    box-shadow: 0 6px 20px rgba(var(--accent-color-rgb), 0.3);
+                    filter: brightness(1.1);
                 }
 
                 @media (max-width: 1200px) { 
@@ -511,85 +541,82 @@ const App = () => {
                     .header { margin-bottom: 2rem; }
                     .z-logo { font-size: 2.2rem; }
                 }
-            `}</style>
-
-            <div className="app-container">
-                <header className="header">
-                    <ZAssetsLogo />
-                    <h1>ROE Calculator</h1>
-                    <p>An advanced calculator to determine the Return on Equity (ROE) and profitability of your real estate investments.</p>
-                </header>
-                <div className="main-layout">
-                    <div className="panel input-panel">
-                        <section>
-                            <div className="section-title">Property & Loan</div>
-                            <NumberInput label="Agreement Value" value={apartmentValue} onChange={e => setApartmentValue(Number(e.target.value))} unit="₹" min={500000} max={50000000} step={100000} />
-                            <NumberInput label="Down Payment" value={downPaymentPercent} onChange={e => setDownPaymentPercent(Number(e.target.value))} unit="%" min={0} max={100} step={1}/>
-                            <NumberInput label="Loan Interest Rate" value={interestRate} onChange={e => setInterestRate(Number(e.target.value))} unit="%" min={1} max={15} step={0.05}/>
-                            <NumberInput label="Loan Term" value={loanTerm} onChange={e => setLoanTerm(Number(e.target.value))} unit="years" min={1} max={30} step={1}/>
-                        </section>
-                        <section>
-                            <div className="section-title">Assumptions</div>
-                             <div className="input-row">
-                                <label>Initial Monthly Rent</label>
-                                <div className="input-container" style={{backgroundColor: '#111827', padding: '0.75rem 1rem'}}>
-                                    <span style={{color: 'var(--text-color)', fontSize: '1rem'}}>{formatCurrency(initialMonthlyRent)}</span>
-                                    <span className="help-text" style={{marginLeft:'auto'}}>Fixed at 5% of value/year</span>
-                                </div>
-                            </div>
-                            <NumberInput label="Annual Rent Escalation" value={rentEscalation} onChange={e => setRentEscalation(Number(e.target.value))} unit="%" min={0} max={20} step={0.5}/>
-                            <NumberInput label="Escalation Frequency" helpText="(in years)" value={rentEscalationFrequency} onChange={e => setRentEscalationFrequency(Number(e.target.value))} unit="years" min={1} max={10} step={1}/>
-                            <NumberInput label="Capital Appreciation" helpText="(Annual Rate)" value={capitalAppreciation} onChange={e => setCapitalAppreciation(Number(e.target.value))} unit="%" min={0} max={20} step={0.5}/>
-                            <NumberInput label="Sale Time" value={saleTime} onChange={e => setSaleTime(Number(e.target.value))} unit="years" min={1} max={50} step={1}/>
-                            <NumberInput label="Inflation" helpText="(For NPV Calculation)" value={inflation} onChange={e => setInflation(Number(e.target.value))} unit="%" min={0} max={15} step={0.1}/>
-                        </section>
-                    </div>
-
-                    <div className="output-panel">
-                        <div className="stats-grid">
-                            <StatCard label="XIRR" value={formatPercent(xirr)} helpText={xirrHelpText} primary />
-                            <StatCard label="ROE (NPV)" value={formatPercent(roe)} helpText="Return on Equity (adjusted for inflation)" />
-                            <StatCard label="Average Gross Yield" value={formatPercent(averageGrossYield)} helpText="Average annual rent as a percentage of the initial property value." />
-                        </div>
-                         <div className="panel">
-                            <div className="section-title">Key Figures</div>
-                             <div className="output-row">
-                                 <label>Down Payment</label>
-                                 <span>{formatCurrency(downPaymentAmount)}</span>
-                             </div>
-                             <div className="output-row">
-                                 <label>Loan EMI</label>
-                                 <span>{formatCurrency(emi)}</span>
-                             </div>
-                              <div className="output-row">
-                                 <label>Net Proceeds on Sale ({saleTime} yrs)</label>
-                                 <span>{formatCurrency(futureAssetValue - pendingLoan)}</span>
-                             </div>
-                             <div className="output-row">
-                                 <label>Total Equity Invested (NPV)</label>
-                                 <span>{formatCurrency(totalEquityNpv)}</span>
-                             </div>
-                        </div>
-                         <div className="panel">
-                            <button onClick={handleDownload} className="download-button">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
-                                  <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
-                                  <path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z"/>
-                                </svg>
-                                <span>Download Report (.csv)</span>
-                            </button>
-                        </div>
-                         <div className="panel">
-                             <Accordion title="View Monthly Breakdown">
-                                <DetailsTable data={monthlyBreakdown} formatCurrency={formatCurrency} formatPercent={formatPercent} />
-                             </Accordion>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </>
+            `),
+        React.createElement("div", { className: "app-container" },
+            React.createElement("header", { className: "header" },
+                React.createElement(ZAssetsLogo),
+                React.createElement("h1", null, "ROE Calculator"),
+                React.createElement("p", null, "An advanced calculator to determine the Return on Equity (ROE) and profitability of your real estate investments.")
+            ),
+            React.createElement("div", { className: "main-layout" },
+                React.createElement("div", { className: "panel input-panel" },
+                    React.createElement("section", null,
+                        React.createElement("div", { className: "section-title" }, "Property & Loan"),
+                        React.createElement(NumberInput, { label: "Agreement Value", value: apartmentValue, onChange: e => setApartmentValue(Number(e.target.value)), unit: "\u20B9", min: 500000, max: 50000000, step: 100000 }),
+                        React.createElement(NumberInput, { label: "Down Payment", value: downPaymentPercent, onChange: e => setDownPaymentPercent(Number(e.target.value)), unit: "%", min: 0, max: 100, step: 1 }),
+                        React.createElement(NumberInput, { label: "Loan Interest Rate", value: interestRate, onChange: e => setInterestRate(Number(e.target.value)), unit: "%", min: 1, max: 15, step: 0.05 }),
+                        React.createElement(NumberInput, { label: "Loan Term", value: loanTerm, onChange: e => setLoanTerm(Number(e.target.value)), unit: "years", min: 1, max: 30, step: 1 })
+                    ),
+                    React.createElement("section", null,
+                        React.createElement("div", { className: "section-title" }, "Assumptions"),
+                        React.createElement("div", { className: "input-row" },
+                            React.createElement("label", null, "Initial Monthly Rent"),
+                            React.createElement("div", { className: "input-container", style: { padding: '0.75rem 1rem' } },
+                                React.createElement("span", { style: { color: 'var(--text-color)', fontSize: '1rem' } }, formatCurrency(initialMonthlyRent)),
+                                React.createElement("span", { className: "help-text", style: { marginLeft: 'auto' } }, "Fixed at 5% of value/year")
+                            )
+                        ),
+                        React.createElement(NumberInput, { label: "Annual Rent Escalation", value: rentEscalation, onChange: e => setRentEscalation(Number(e.target.value)), unit: "%", min: 0, max: 20, step: 0.5 }),
+                        React.createElement(NumberInput, { label: "Escalation Frequency", helpText: "(in years)", value: rentEscalationFrequency, onChange: e => setRentEscalationFrequency(Number(e.target.value)), unit: "years", min: 1, max: 10, step: 1 }),
+                        React.createElement(NumberInput, { label: "Capital Appreciation", helpText: "(Annual Rate)", value: capitalAppreciation, onChange: e => setCapitalAppreciation(Number(e.target.value)), unit: "%", min: 0, max: 20, step: 0.5 }),
+                        React.createElement(NumberInput, { label: "Sale Time", value: saleTime, onChange: e => setSaleTime(Number(e.target.value)), unit: "years", min: 1, max: 50, step: 1 }),
+                        React.createElement(NumberInput, { label: "Inflation", helpText: "(For NPV Calculation)", value: inflation, onChange: e => setInflation(Number(e.target.value)), unit: "%", min: 0, max: 15, step: 0.1 })
+                    )
+                ),
+                React.createElement("div", { className: "output-panel" },
+                    React.createElement("div", { className: "stats-grid" },
+                        React.createElement(StatCard, { label: "XIRR", value: formatPercent(xirr), helpText: xirrHelpText, primary: true }),
+                        React.createElement(StatCard, { label: "ROE (NPV)", value: formatPercent(roe), helpText: "Return on Equity (adjusted for inflation)" }),
+                        React.createElement(StatCard, { label: "Average Gross Yield", value: formatPercent(averageGrossYield), helpText: "Average annual rent as a percentage of the initial property value." })
+                    ),
+                    React.createElement("div", { className: "panel" },
+                        React.createElement("div", { className: "section-title" }, "Key Figures"),
+                        React.createElement("div", { className: "output-row" },
+                            React.createElement("label", null, "Down Payment"),
+                            React.createElement("span", null, formatCurrency(downPaymentAmount))
+                        ),
+                        React.createElement("div", { className: "output-row" },
+                            React.createElement("label", null, "Loan EMI"),
+                            React.createElement("span", null, formatCurrency(emi))
+                        ),
+                        React.createElement("div", { className: "output-row" },
+                            React.createElement("label", null, `Net Proceeds on Sale (${saleTime} yrs)`),
+                            React.createElement("span", null, formatCurrency(futureAssetValue - pendingLoan))
+                        ),
+                        React.createElement("div", { className: "output-row" },
+                            React.createElement("label", null, "Total Equity Invested (NPV)"),
+                            React.createElement("span", null, formatCurrency(totalEquityNpv))
+                        )
+                    ),
+                    React.createElement("div", { className: "panel" },
+                        React.createElement("button", { onClick: handleDownload, className: "download-button" },
+                            React.createElement("svg", { xmlns: "http://www.w3.org/2000/svg", width: "20", height: "20", fill: "currentColor", viewBox: "0 0 16 16" },
+                                React.createElement("path", { d: "M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z" }),
+                                React.createElement("path", { d: "M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z" })
+                            ),
+                            React.createElement("span", null, "Download Report (.csv)")
+                        )
+                    ),
+                    React.createElement("div", { className: "panel" },
+                        React.createElement(Accordion, { title: "View Monthly Breakdown" },
+                            React.createElement(DetailsTable, { data: monthlyBreakdown, formatCurrency: formatCurrency, formatPercent: formatPercent })
+                        )
+                    )
+                )
+            )
+        )
     );
 };
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(<App />);
+root.render(React.createElement(App));
