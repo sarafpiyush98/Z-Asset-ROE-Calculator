@@ -310,15 +310,22 @@ const App = () => {
         null,
         React.createElement("style", null, `
                 :root {
-                    --bg-color: #0D1117;
+                    --bg-color: #0A0E14;
                     --text-color: #E6EDF3;
-                    --label-color: #8D96A0;
-                    --accent-color-1: #30A8FF;
-                    --accent-color-2: #007BFF;
-                    --accent-color-rgb: 48, 168, 255;
-                    --panel-bg: rgba(22, 27, 34, 0.6);
-                    --border-color: rgba(255, 255, 255, 0.1);
+                    --label-color: #9DA8B7;
+                    --accent-color-1: #38BDF8; /* sky-400 */
+                    --accent-color-2: #0EA5E9; /* sky-500 */
+                    --accent-color-rgb: 56, 189, 248;
+                    --panel-bg: rgba(22, 27, 34, 0.7);
+                    --border-color: rgba(255, 255, 255, 0.08);
                     --font-family: 'Inter', sans-serif;
+                }
+
+                *, *::before, *::after {
+                    box-sizing: border-box;
+                }
+                html {
+                    overflow-x: clip;
                 }
 
                 @keyframes fadeIn {
@@ -354,6 +361,7 @@ const App = () => {
                     margin: 0 auto; 
                     position: relative;
                     overflow: hidden;
+                    border-radius: 24px;
                 }
 
                 .app-container::before, .app-container::after {
@@ -362,32 +370,32 @@ const App = () => {
                     z-index: -1;
                     width: 500px;
                     height: 500px;
-                    filter: blur(150px);
+                    filter: blur(170px);
                     border-radius: 50%;
                 }
 
                 .app-container::before {
-                    background: radial-gradient(circle, rgba(var(--accent-color-rgb), 0.2), transparent 70%);
+                    background: radial-gradient(circle, rgba(var(--accent-color-rgb), 0.15), transparent 70%);
                     top: -100px;
                     left: -200px;
                     animation: move-glow 25s infinite ease-in-out;
                 }
 
                 .app-container::after {
-                    background: radial-gradient(circle, rgba(100, 80, 255, 0.15), transparent 70%);
+                    background: radial-gradient(circle, rgba(100, 80, 255, 0.12), transparent 70%);
                     bottom: -150px;
                     right: -250px;
                     animation: move-glow-2 30s infinite ease-in-out;
                 }
                 
-                .header { text-align: center; margin-bottom: 3rem; animation: slideInUp 0.6s ease-out, fadeIn 0.6s ease-out; }
+                .header { text-align: center; margin-bottom: 3.5rem; animation: slideInUp 0.6s ease-out, fadeIn 0.6s ease-out; }
                 
                 .z-logo {
                     font-family: 'Inter', sans-serif;
                     font-weight: 800;
                     font-size: 3.5rem;
                     color: #fff;
-                    text-shadow: 0 0 10px rgba(var(--accent-color-rgb), 0.5), 0 0 20px rgba(var(--accent-color-rgb), 0.3);
+                    text-shadow: 0 0 15px rgba(var(--accent-color-rgb), 0.5), 0 0 30px rgba(var(--accent-color-rgb), 0.3);
                     letter-spacing: 0.08em;
                     margin-bottom: 1rem;
                     filter: drop-shadow(0 2px 3px rgba(0,0,0,0.4));
@@ -424,75 +432,79 @@ const App = () => {
                 .header h1 { font-size: 1.8rem; font-weight: 700; color: var(--text-color); margin: 0 0 0.5rem 0; }
                 .header p { font-size: 1.1rem; color: var(--label-color); margin-top: -0.5rem; max-width: 600px; margin-left: auto; margin-right: auto; }
                 
-                .main-layout { display: grid; grid-template-columns: 400px 1fr; gap: 2rem; align-items: flex-start; }
+                .main-layout { display: grid; grid-template-columns: 420px 1fr; gap: 2.5rem; align-items: flex-start; }
                 
                 .panel {
                     background: var(--panel-bg);
-                    border-radius: 16px;
+                    border-radius: 20px;
                     border: 1px solid var(--border-color);
-                    padding: 2rem;
-                    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-                    backdrop-filter: blur(18px);
-                    -webkit-backdrop-filter: blur(18px);
+                    padding: 2.5rem;
+                    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(255, 255, 255, 0.05) inset;
+                    backdrop-filter: blur(20px);
+                    -webkit-backdrop-filter: blur(20px);
                     animation: slideInUp 0.6s ease-out 0.2s, fadeIn 0.6s ease-out 0.2s;
                     animation-fill-mode: backwards;
                 }
-                .input-panel { display: flex; flex-direction: column; gap: 1.75rem; }
-                .output-panel { display: flex; flex-direction: column; gap: 1.5rem; animation-delay: 0.4s; }
+                .input-panel { display: flex; flex-direction: column; gap: 2.5rem; }
+                .output-panel { display: flex; flex-direction: column; gap: 2rem; animation-delay: 0.4s; }
                 
-                .section-title { font-size: 1.25rem; font-weight: 600; color: var(--text-color); padding-bottom: 0.75rem; border-bottom: 1px solid var(--border-color); margin-bottom: 1rem; }
+                .section-title { font-size: 1.3rem; font-weight: 600; color: var(--text-color); padding-bottom: 1rem; border-bottom: 1px solid var(--border-color); margin-bottom: 1.5rem; }
                 
-                .input-row { display: flex; flex-direction: column; gap: 0.5rem; }
-                label { font-weight: 500; color: var(--label-color); font-size: 0.9rem; }
-                .help-text { display: inline-block; font-size: 0.8rem; color: #6B7280; font-weight: 400; margin-left: 8px; }
+                .input-row { display: flex; flex-direction: column; gap: 0.6rem; }
+                label { font-weight: 500; color: var(--label-color); font-size: 0.95rem; }
+                .help-text { display: inline-block; font-size: 0.8rem; color: #7B8591; font-weight: 400; margin-left: 8px; }
 
-                .input-container { display: flex; align-items: center; background-color: rgba(0,0,0,0.2); border: 1px solid var(--border-color); border-radius: 8px; transition: all 0.2s; }
+                .input-container { display: flex; align-items: center; background-color: rgba(0,0,0,0.3); border: 1px solid var(--border-color); border-radius: 10px; transition: all 0.2s; }
                 .input-container:focus-within {
                     border-color: var(--accent-color-1);
-                    box-shadow: 0 0 0 3px rgba(var(--accent-color-rgb), 0.2);
+                    box-shadow: 0 0 0 3px rgba(var(--accent-color-rgb), 0.25);
                 }
-                input[type="number"] { width: 100%; padding: 0.75rem 1rem; border: none; background: transparent; font-size: 1rem; font-family: var(--font-family); color: var(--text-color); -moz-appearance: textfield; }
+                input[type="number"] { width: 100%; padding: 0.85rem 1.1rem; border: none; background: transparent; font-size: 1rem; font-family: var(--font-family); color: var(--text-color); -moz-appearance: textfield; }
                 input[type="number"]::-webkit-outer-spin-button, input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
                 input[type="number"]:focus { outline: none; }
-                .unit { padding-right: 1rem; color: var(--label-color); font-weight: 500; white-space: nowrap; }
+                .unit { padding-right: 1.1rem; color: var(--label-color); font-weight: 500; white-space: nowrap; }
 
-                .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
+                .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.75rem; }
                 .stat-card {
                     background: var(--panel-bg);
-                    padding: 1.5rem; border-radius: 12px;
+                    padding: 1.75rem; border-radius: 16px;
                     border: 1px solid var(--border-color);
                     backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
-                    transition: transform 0.2s, box-shadow 0.2s;
+                    transition: transform 0.3s, box-shadow 0.3s;
                 }
-                .stat-card:hover { transform: translateY(-4px); box-shadow: 0 8px 25px rgba(0,0,0,0.3); }
+                .stat-card:hover { transform: translateY(-5px); box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
                 .stat-card.primary {
-                    background: linear-gradient(135deg, rgba(var(--accent-color-rgb), 0.2), rgba(var(--accent-color-rgb), 0.1));
-                    border-color: rgba(var(--accent-color-rgb), 0.5);
+                    background: linear-gradient(135deg, rgba(var(--accent-color-rgb), 0.25), rgba(var(--accent-color-rgb), 0.15));
+                    border-color: rgba(var(--accent-color-rgb), 0.6);
+                    box-shadow: 0 0 20px rgba(var(--accent-color-rgb), 0.1);
                 }
-                .stat-card.primary .stat-value { color: var(--accent-color-1); text-shadow: 0 0 8px rgba(var(--accent-color-rgb), 0.3); }
+                .stat-card.primary:hover {
+                    box-shadow: 0 5px 35px rgba(var(--accent-color-rgb), 0.3);
+                }
+                .stat-card.primary .stat-value { color: var(--accent-color-1); text-shadow: 0 0 12px rgba(var(--accent-color-rgb), 0.5); }
                 
-                .stat-label { font-size: 1rem; color: var(--label-color); margin-bottom: 0.5rem; font-weight: 500; }
-                .stat-value { font-size: 2.5rem; font-weight: 700; color: var(--text-color); line-height: 1; }
+                .stat-label { font-size: 1rem; color: var(--label-color); margin-bottom: 0.75rem; font-weight: 500; }
+                .stat-value { font-size: clamp(2.1rem, 7vw, 2.5rem); font-weight: 700; color: var(--text-color); line-height: 1.1; }
 
-                .output-row { display: flex; justify-content: space-between; align-items: center; padding: 1rem 0; border-bottom: 1px solid var(--border-color); }
+                .output-row { display: flex; justify-content: space-between; align-items: center; padding: 1.1rem 0; border-bottom: 1px solid var(--border-color); }
                 .output-row:last-child { border-bottom: none; padding-bottom: 0;}
                 .output-row:first-child { padding-top: 0;}
                 .output-row > label { font-size: 1rem; color: var(--label-color)}
-                .output-row > span { font-size: 1.1rem; font-weight: 600; }
+                .output-row > span { font-size: 1.1rem; font-weight: 600; text-align: right; word-break: break-word; }
                 
                 .accordion { transition: background-color 0.2s; }
-                .accordion-header { background: transparent; border: none; color: var(--text-color); width: 100%; display: flex; justify-content: space-between; align-items: center; padding: 0.25rem 0; font-size: 1.25rem; font-weight: 600; cursor: pointer; }
+                .accordion-header { background: transparent; border: none; color: var(--text-color); width: 100%; display: flex; justify-content: space-between; align-items: center; padding: 0.25rem 0; font-size: 1.3rem; font-weight: 600; cursor: pointer; }
                 .accordion-header:hover .accordion-icon { color: var(--accent-color-1); }
-                .accordion-icon { font-size: 1.5rem; transition: transform 0.3s ease, color 0.2s; transform-origin: center; }
+                .accordion-icon { font-size: 1.8rem; transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1), color 0.2s; transform-origin: center; }
                 .accordion.open .accordion-icon { transform: rotate(90deg); }
                 
-                .accordion-content { overflow: hidden; max-height: 0; transition: max-height 0.5s ease-in-out, padding-top 0.5s ease; }
+                .accordion-content { overflow: hidden; max-height: 0; transition: max-height 0.6s ease-in-out, padding-top 0.6s ease; }
                 .accordion.open .accordion-content { max-height: 500px; padding-top: 1.5rem; }
 
-                .details-table-container { max-height: 400px; overflow: auto; border: 1px solid var(--border-color); border-radius: 8px; background: rgba(0,0,0,0.2); }
+                .details-table-container { max-height: 400px; overflow-x: auto; border: 1px solid var(--border-color); border-radius: 12px; background: rgba(0,0,0,0.25); }
                 .details-table { width: 100%; border-collapse: collapse; text-align: right; }
-                .details-table th, .details-table td { padding: 0.85rem 1rem; border-bottom: 1px solid var(--border-color); font-size: 0.9rem; white-space: nowrap; }
-                .details-table th { position: sticky; top: 0; background-color: rgba(28, 33, 40, 0.8); backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px); font-weight: 600; color: var(--label-color); text-align: right; }
+                .details-table th, .details-table td { padding: 0.9rem 1.25rem; border-bottom: 1px solid var(--border-color); font-size: 0.9rem; white-space: nowrap; }
+                .details-table th { position: sticky; top: 0; background-color: rgba(28, 33, 40, 0.85); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); font-weight: 600; color: var(--label-color); text-align: right; }
                 .details-table th:first-child, .details-table td:first-child { text-align: left; }
                 .details-table tbody tr:last-child td { border-bottom: none; }
                 .details-table tbody tr:hover { background-color: rgba(var(--accent-color-rgb), 0.1); }
@@ -503,39 +515,42 @@ const App = () => {
                     font-size: 1.1rem;
                     font-weight: 600;
                     color: white;
-                    background-image: linear-gradient(to right, var(--accent-color-1), var(--accent-color-2));
-                    border: 1px solid rgba(var(--accent-color-rgb), 0.5);
-                    border-radius: 8px;
+                    background-image: linear-gradient(to right, var(--accent-color-1) 0%, var(--accent-color-2) 51%, var(--accent-color-1) 100%);
+                    background-size: 200% auto;
+                    border: none;
+                    border-radius: 10px;
                     cursor: pointer;
-                    transition: all 0.2s;
+                    transition: all 0.4s;
                     box-shadow: 0 4px 15px rgba(0,0,0,0.2);
                     display: flex;
                     align-items: center;
                     justify-content: center;
-                    gap: 0.5rem;
+                    gap: 0.6rem;
                 }
                 .download-button:hover {
+                    background-position: right center;
                     transform: translateY(-2px);
                     box-shadow: 0 6px 20px rgba(var(--accent-color-rgb), 0.3);
-                    filter: brightness(1.1);
                 }
 
                 @media (max-width: 1024px) { 
                     .main-layout { 
                         grid-template-columns: 1fr; 
-                        gap: 1.5rem;
+                        gap: 2rem;
                     } 
                 }
                 @media (max-width: 992px) {
                     .stats-grid {
                         grid-template-columns: 1fr 1fr;
+                        gap: 1.5rem;
                     }
                 }
                 @media (max-width: 768px) {
                     body { padding: 1rem; }
+                    .header { margin-bottom: 2.5rem; }
                     .z-logo { font-size: 2.8rem; }
                     .header p { font-size: 1rem; }
-                    .panel { padding: 1.5rem; }
+                    .panel { padding: 2rem; border-radius: 16px; }
                 }
                 @media (max-width: 600px) { 
                     .header { margin-bottom: 2rem; }
@@ -544,15 +559,20 @@ const App = () => {
                         grid-template-columns: 1fr;
                         gap: 1rem;
                      } 
-                    .stat-value { font-size: 2rem; }
+                    .stat-value { font-size: 2.2rem; }
                     .output-row {
                         flex-direction: column;
                         align-items: flex-start;
-                        gap: 0.25rem;
-                        padding: 0.75rem 0;
+                        gap: 0.3rem;
+                        padding: 0.8rem 0;
                     }
                     .output-row > label { font-size: 0.95rem; }
-                    .output-row > span { font-size: 1rem; }
+                    .output-row > span { 
+                        font-size: 1.1rem;
+                        text-align: left;
+                    }
+                     .panel { padding: 1.5rem; }
+                     .section-title { font-size: 1.2rem; margin-bottom: 1.2rem;}
                 }
             `),
         React.createElement("div", { className: "app-container" },
@@ -574,7 +594,7 @@ const App = () => {
                         React.createElement("div", { className: "section-title" }, "Assumptions"),
                         React.createElement("div", { className: "input-row" },
                             React.createElement("label", null, "Initial Monthly Rent"),
-                            React.createElement("div", { className: "input-container", style: { padding: '0.75rem 1rem' } },
+                            React.createElement("div", { className: "input-container", style: { padding: '0.85rem 1.1rem', background: 'rgba(0,0,0,0.1)' } },
                                 React.createElement("span", { style: { color: 'var(--text-color)', fontSize: '1rem' } }, formatCurrency(initialMonthlyRent)),
                                 React.createElement("span", { className: "help-text", style: { marginLeft: 'auto' } }, "Fixed at 5% of value/year")
                             )
