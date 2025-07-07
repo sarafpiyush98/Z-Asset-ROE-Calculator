@@ -1,7 +1,7 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { ZAssetsLogo, NumberInput, StatCard, Accordion, DetailsTable, ThemeToggle } from './components';
-import type { MonthlyBreakdownRow } from './components';
-import { calculateXirr } from './utils';
+import { ZAssetsLogo, NumberInput, StatCard, Accordion, DetailsTable, ThemeToggle } from './components.tsx';
+import type { MonthlyBreakdownRow } from './components.tsx';
+import { calculateXirr } from './utils.ts';
 
 // --- Main Application ---
 const App = () => {
