@@ -1,3 +1,5 @@
+
+
 import React, { useState, useMemo, useEffect } from 'react';
 import { ZAssetsLogo, NumberInput, StatCard, Accordion, DetailsTable, ThemeToggle } from './components.tsx';
 import type { MonthlyBreakdownRow } from './components.tsx';
@@ -28,53 +30,78 @@ const App = () => {
         setTheme(prevTheme => (prevTheme === 'light' ? 'dark' : 'light'));
     };
     
-    // --- State for User Inputs ---
-    const [apartmentValue, setApartmentValue] = useState(2500000);
-    const [downPaymentPercent, setDownPaymentPercent] = useState(20);
-    const [interestRate, setInterestRate] = useState(8.7);
-    const [loanTerm, setLoanTerm] = useState(15);
-    const [rentEscalation, setRentEscalation] = useState(10);
-    const [rentEscalationFrequency, setRentEscalationFrequency] = useState(3);
-    const [capitalAppreciation, setCapitalAppreciation] = useState(7);
-    const [saleTime, setSaleTime] = useState(15);
-    const [inflation, setInflation] = useState(6);
+    // --- State for User Inputs (as strings for better UX) ---
+    const [apartmentValue, setApartmentValue] = useState('2500000');
+    const [downPaymentPercent, setDownPaymentPercent] = useState('20');
+    const [interestRate, setInterestRate] = useState('8.7');
+    const [loanTerm, setLoanTerm] = useState('15');
+    const [initialRentYield, setInitialRentYield] = useState('5');
+    const [rentEscalation, setRentEscalation] = useState('10');
+    const [rentEscalationFrequency, setRentEscalationFrequency] = useState('3');
+    const [capitalAppreciation, setCapitalAppreciation] = useState('7');
+    const [saleTime, setSaleTime] = useState('15');
+    const [inflation, setInflation] = useState('6');
+
+    // --- Input Handlers ---
+    const handleInputChange = (setter: React.Dispatch<React.SetStateAction<string>>) => (e: React.ChangeEvent<HTMLInputElement>) => {
+        setter(e.target.value);
+    };
+
+    const handleInputBlur = (setter: React.Dispatch<React.SetStateAction<string>>) => (e: React.FocusEvent<HTMLInputElement>) => {
+        if (e.target.value.trim() === '') {
+            setter('0');
+        }
+    };
+
+    // --- Parsed Numeric Values for Calculation ---
+    const p = (s: string): number => parseFloat(s) || 0;
+    const apartmentValueNum = p(apartmentValue);
+    const downPaymentPercentNum = p(downPaymentPercent);
+    const interestRateNum = p(interestRate);
+    const loanTermNum = p(loanTerm);
+    const initialRentYieldNum = p(initialRentYield);
+    const rentEscalationNum = p(rentEscalation);
+    const rentEscalationFrequencyNum = p(rentEscalationFrequency);
+    const capitalAppreciationNum = p(capitalAppreciation);
+    const saleTimeNum = p(saleTime);
+    const inflationNum = p(inflation);
 
     // --- Financial Calculations using useMemo for efficiency ---
     
-    const initialMonthlyRent = useMemo(() => (apartmentValue * 0.05) / 12, [apartmentValue]);
-    const downPaymentAmount = useMemo(() => apartmentValue * (downPaymentPercent / 100), [apartmentValue, downPaymentPercent]);
-    const loanAmount = useMemo(() => apartmentValue - downPaymentAmount, [apartmentValue, downPaymentAmount]);
+    const initialMonthlyRent = useMemo(() => (apartmentValueNum * (initialRentYieldNum / 100)) / 12, [apartmentValueNum, initialRentYieldNum]);
+    const downPaymentAmount = useMemo(() => apartmentValueNum * (downPaymentPercentNum / 100), [apartmentValueNum, downPaymentPercentNum]);
+    const loanAmount = useMemo(() => apartmentValueNum - downPaymentAmount, [apartmentValueNum, downPaymentAmount]);
 
     const emi = useMemo(() => {
         if (loanAmount <= 0) return 0;
-        const monthlyRate = (interestRate / 100) / 12;
-        if (monthlyRate === 0) return loanAmount / (loanTerm * 12);
-        const nper = loanTerm * 12;
+        const monthlyRate = (interestRateNum / 100) / 12;
+        if (monthlyRate === 0) return loanAmount / (loanTermNum * 12);
+        const nper = loanTermNum * 12;
         const pvif = Math.pow(1 + monthlyRate, nper);
         return (monthlyRate * loanAmount * pvif) / (pvif - 1);
-    }, [loanAmount, interestRate, loanTerm]);
+    }, [loanAmount, interestRateNum, loanTermNum]);
 
     const { futureAssetValue, pendingLoan, monthlyBreakdown } = useMemo(() => {
         const breakdownData: MonthlyBreakdownRow[] = [];
-        const totalMonths = saleTime * 12;
-        const totalLoanMonths = loanTerm * 12;
+        const totalMonths = saleTimeNum * 12;
+        const totalLoanMonths = loanTermNum * 12;
         
-        if (totalMonths <= 0 || apartmentValue <= 0) {
-             return { futureAssetValue: apartmentValue, pendingLoan: loanAmount, monthlyBreakdown: [] };
+        if (totalMonths <= 0 || apartmentValueNum <= 0) {
+             return { futureAssetValue: apartmentValueNum, pendingLoan: loanAmount, monthlyBreakdown: [] };
         }
 
-        const annualEscalationRate = rentEscalation / 100;
-        const r = (interestRate / 100) / 12;
+        const annualEscalationRate = rentEscalationNum / 100;
+        const r = (interestRateNum / 100) / 12;
         const P = loanAmount;
         
         for (let m = 1; m <= totalMonths; m++) {
             const yearsPassed = Math.floor((m - 1) / 12);
-            const numEscalations = rentEscalationFrequency > 0 ? Math.floor(yearsPassed / rentEscalationFrequency) : 0;
+            const numEscalations = rentEscalationFrequencyNum > 0 ? Math.floor(yearsPassed / rentEscalationFrequencyNum) : 0;
 
             const currentMonthlyRent = initialMonthlyRent * Math.pow(1 + annualEscalationRate, numEscalations);
             const currentEmi = (m > totalLoanMonths || loanAmount <= 0) ? 0 : emi;
             const netEmiForMonth = currentEmi - currentMonthlyRent;
-            const annualizedGrossYield = (currentMonthlyRent * 12 / apartmentValue) * 100;
+            const annualizedGrossYield = (currentMonthlyRent * 12 / apartmentValueNum) * 100;
 
             breakdownData.push({
                 month: m,
@@ -85,10 +112,10 @@ const App = () => {
             });
         }
         
-        const finalAssetValue = apartmentValue * Math.pow(1 + (capitalAppreciation / 100), saleTime);
+        const finalAssetValue = apartmentValueNum * Math.pow(1 + (capitalAppreciationNum / 100), saleTimeNum);
         
         let finalPendingLoan;
-        if (saleTime >= loanTerm || loanAmount <= 0) {
+        if (saleTimeNum >= loanTermNum || loanAmount <= 0) {
             finalPendingLoan = 0;
         } else {
              finalPendingLoan = r === 0 ? P - (emi * totalMonths) : P * Math.pow(1 + r, totalMonths) - emi * ((Math.pow(1 + r, totalMonths) - 1) / r);
@@ -99,11 +126,11 @@ const App = () => {
             pendingLoan: Math.max(0, finalPendingLoan),
             monthlyBreakdown: breakdownData,
         };
-    }, [apartmentValue, saleTime, rentEscalation, rentEscalationFrequency, emi, initialMonthlyRent, interestRate, capitalAppreciation, loanAmount, loanTerm]);
+    }, [apartmentValueNum, saleTimeNum, rentEscalationNum, rentEscalationFrequencyNum, emi, initialMonthlyRent, interestRateNum, capitalAppreciationNum, loanAmount, loanTermNum]);
 
     const totalEquityNpv = useMemo(() => {
-        const monthlyInflationRate = (inflation / 100) / 12;
-        const totalMonths = saleTime * 12;
+        const monthlyInflationRate = (inflationNum / 100) / 12;
+        const totalMonths = saleTimeNum * 12;
         if (totalMonths <= 0) return downPaymentAmount;
 
         let pvOfNetEmis = monthlyBreakdown.reduce((acc, row, index) => {
@@ -113,7 +140,7 @@ const App = () => {
         }, 0);
 
         return downPaymentAmount + pvOfNetEmis;
-    }, [downPaymentAmount, inflation, saleTime, monthlyBreakdown]);
+    }, [downPaymentAmount, inflationNum, saleTimeNum, monthlyBreakdown]);
     
     const roe = useMemo(() => {
         const netFutureEquity = futureAssetValue - pendingLoan;
@@ -138,7 +165,7 @@ const App = () => {
 
         const netFutureEquity = futureAssetValue - pendingLoan;
         const saleDate = new Date(today);
-        saleDate.setMonth(today.getMonth() + saleTime * 12);
+        saleDate.setMonth(today.getMonth() + saleTimeNum * 12);
         cashflows.push({ amount: netFutureEquity, date: saleDate });
         
         const hasPositive = cashflows.some(cf => cf.amount > 0);
@@ -148,17 +175,17 @@ const App = () => {
         const result = calculateXirr(cashflows);
         return isNaN(result) ? 0 : result;
 
-    }, [downPaymentAmount, saleTime, futureAssetValue, pendingLoan, monthlyBreakdown]);
+    }, [downPaymentAmount, saleTimeNum, futureAssetValue, pendingLoan, monthlyBreakdown]);
     
     const averageGrossYield = useMemo(() => {
-        if (!monthlyBreakdown || monthlyBreakdown.length === 0 || apartmentValue === 0) {
+        if (!monthlyBreakdown || monthlyBreakdown.length === 0 || apartmentValueNum === 0) {
             return 0;
         }
         const totalRent = monthlyBreakdown.reduce((acc, row) => acc + row.rent, 0);
         const averageMonthlyRent = totalRent / monthlyBreakdown.length;
         const averageYearlyRent = averageMonthlyRent * 12;
-        return (averageYearlyRent / apartmentValue) * 100;
-    }, [monthlyBreakdown, apartmentValue]);
+        return (averageYearlyRent / apartmentValueNum) * 100;
+    }, [monthlyBreakdown, apartmentValueNum]);
 
 
     // --- Formatting Helpers ---
@@ -178,21 +205,22 @@ const App = () => {
         const summaryData = [
             ["Investment Summary", ""],
             ["Category", "Metric", "Value"],
-            ["Inputs", "Agreement Value", formatCurrency(apartmentValue)],
-            ["Inputs", "Down Payment", `${downPaymentPercent}% (${formatCurrency(downPaymentAmount)})`],
+            ["Inputs", "Agreement Value", formatCurrency(apartmentValueNum)],
+            ["Inputs", "Down Payment", `${downPaymentPercentNum}% (${formatCurrency(downPaymentAmount)})`],
             ["Inputs", "Loan Amount", formatCurrency(loanAmount)],
-            ["Inputs", "Interest Rate", formatPercent(interestRate)],
-            ["Inputs", "Loan Term", `${loanTerm} years`],
-            ["Inputs", "Sale Time", `${saleTime} years`],
-            ["Assumptions", "Initial Monthly Rent", formatCurrency(initialMonthlyRent)],
-            ["Assumptions", "Annual Rent Escalation", `${formatPercent(rentEscalation)} every ${rentEscalationFrequency} years`],
-            ["Assumptions", "Annual Capital Appreciation", formatPercent(capitalAppreciation)],
-            ["Assumptions", "Inflation (for NPV)", formatPercent(inflation)],
+            ["Inputs", "Interest Rate", formatPercent(interestRateNum)],
+            ["Inputs", "Loan Term", `${loanTermNum} years`],
+            ["Inputs", "Sale Time", `${saleTimeNum} years`],
+            ["Assumptions", "Initial Annual Rent Yield", formatPercent(initialRentYieldNum)],
+            ["Assumptions", "Annual Rent Escalation", `${formatPercent(rentEscalationNum)} every ${rentEscalationFrequencyNum} years`],
+            ["Assumptions", "Annual Capital Appreciation", formatPercent(capitalAppreciationNum)],
+            ["Assumptions", "Inflation (for NPV)", formatPercent(inflationNum)],
             [], // Blank Row
             ["Key Results", "XIRR", formatPercent(xirr)],
             ["Key Results", "ROE (NPV-adjusted)", formatPercent(roe)],
             ["Key Results", "Average Gross Yield", formatPercent(averageGrossYield)],
             ["Key Results", "Loan EMI", formatCurrency(emi)],
+            ["Key Results", "Initial Monthly Rent", formatCurrency(initialMonthlyRent)],
             ["Key Results", "Future Asset Value", formatCurrency(futureAssetValue)],
             ["Key Results", "Pending Loan at Sale", formatCurrency(pendingLoan)],
             ["Key Results", "Net Proceeds on Sale", formatCurrency(futureAssetValue - pendingLoan)],
@@ -245,25 +273,19 @@ const App = () => {
                 <div className="panel input-panel">
                     <section>
                         <div className="section-title">Property & Loan</div>
-                        <NumberInput label="Agreement Value" value={apartmentValue} onChange={e => setApartmentValue(Number(e.target.value))} unit="₹" min={500000} max={50000000} step={100000} />
-                        <NumberInput label="Down Payment" value={downPaymentPercent} onChange={e => setDownPaymentPercent(Number(e.target.value))} unit="%" min={0} max={100} step={1} />
-                        <NumberInput label="Loan Interest Rate" value={interestRate} onChange={e => setInterestRate(Number(e.target.value))} unit="%" min={1} max={15} step={0.05} />
-                        <NumberInput label="Loan Term" value={loanTerm} onChange={e => setLoanTerm(Number(e.target.value))} unit="years" min={1} max={30} step={1} />
+                        <NumberInput label="Agreement Value" value={apartmentValue} onChange={handleInputChange(setApartmentValue)} onBlur={handleInputBlur(setApartmentValue)} unit="₹" min={500000} max={50000000} step={100000} />
+                        <NumberInput label="Down Payment" value={downPaymentPercent} onChange={handleInputChange(setDownPaymentPercent)} onBlur={handleInputBlur(setDownPaymentPercent)} unit="%" min={0} max={100} step={1} />
+                        <NumberInput label="Loan Interest Rate" value={interestRate} onChange={handleInputChange(setInterestRate)} onBlur={handleInputBlur(setInterestRate)} unit="%" min={1} max={15} step={0.05} />
+                        <NumberInput label="Loan Term" value={loanTerm} onChange={handleInputChange(setLoanTerm)} onBlur={handleInputBlur(setLoanTerm)} unit="years" min={1} max={30} step={1} />
                     </section>
                     <section>
                         <div className="section-title">Assumptions</div>
-                        <div className="input-row">
-                            <label>Initial Monthly Rent</label>
-                            <div className="input-container" style={{ padding: '0.75rem 1rem' }}>
-                                <span style={{ color: 'var(--text-color)', fontSize: '1rem' }}>{formatCurrency(initialMonthlyRent)}</span>
-                                <span className="help-text" style={{ marginLeft: 'auto' }}>Fixed at 5% of value/year</span>
-                            </div>
-                        </div>
-                        <NumberInput label="Annual Rent Escalation" value={rentEscalation} onChange={e => setRentEscalation(Number(e.target.value))} unit="%" min={0} max={20} step={0.5} />
-                        <NumberInput label="Escalation Frequency" helpText="(in years)" value={rentEscalationFrequency} onChange={e => setRentEscalationFrequency(Number(e.target.value))} unit="years" min={1} max={10} step={1} />
-                        <NumberInput label="Capital Appreciation" helpText="(Annual Rate)" value={capitalAppreciation} onChange={e => setCapitalAppreciation(Number(e.target.value))} unit="%" min={0} max={20} step={0.5} />
-                        <NumberInput label="Sale Time" value={saleTime} onChange={e => setSaleTime(Number(e.target.value))} unit="years" min={1} max={50} step={1} />
-                        <NumberInput label="Inflation" helpText="(For NPV Calculation)" value={inflation} onChange={e => setInflation(Number(e.target.value))} unit="%" min={0} max={15} step={0.1} />
+                        <NumberInput label="Initial Annual Rent Yield" helpText="(% of agreement value)" value={initialRentYield} onChange={handleInputChange(setInitialRentYield)} onBlur={handleInputBlur(setInitialRentYield)} unit="%" min={1} max={15} step={0.1} />
+                        <NumberInput label="Annual Rent Escalation" value={rentEscalation} onChange={handleInputChange(setRentEscalation)} onBlur={handleInputBlur(setRentEscalation)} unit="%" min={0} max={20} step={0.5} />
+                        <NumberInput label="Escalation Frequency" helpText="(in years)" value={rentEscalationFrequency} onChange={handleInputChange(setRentEscalationFrequency)} onBlur={handleInputBlur(setRentEscalationFrequency)} unit="years" min={1} max={10} step={1} />
+                        <NumberInput label="Capital Appreciation" helpText="(Annual Rate)" value={capitalAppreciation} onChange={handleInputChange(setCapitalAppreciation)} onBlur={handleInputBlur(setCapitalAppreciation)} unit="%" min={0} max={20} step={0.5} />
+                        <NumberInput label="Sale Time" value={saleTime} onChange={handleInputChange(setSaleTime)} onBlur={handleInputBlur(setSaleTime)} unit="years" min={1} max={50} step={1} />
+                        <NumberInput label="Inflation" helpText="(For NPV Calculation)" value={inflation} onChange={handleInputChange(setInflation)} onBlur={handleInputBlur(setInflation)} unit="%" min={0} max={15} step={0.1} />
                     </section>
                 </div>
                 <div className="output-panel">
@@ -283,7 +305,11 @@ const App = () => {
                             <span>{formatCurrency(emi)}</span>
                         </div>
                         <div className="output-row">
-                            <label>{`Net Proceeds on Sale (${saleTime} yrs)`}</label>
+                            <label>Initial Monthly Rent</label>
+                            <span>{formatCurrency(initialMonthlyRent)}</span>
+                        </div>
+                        <div className="output-row">
+                            <label>{`Net Proceeds on Sale (${saleTimeNum} yrs)`}</label>
                             <span>{formatCurrency(futureAssetValue - pendingLoan)}</span>
                         </div>
                         <div className="output-row">

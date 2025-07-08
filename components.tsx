@@ -38,8 +38,9 @@ export const ZAssetsLogo = () => (
 // --- NumberInput ---
 interface NumberInputProps {
     label: string;
-    value: number;
+    value: string;
     onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    onBlur: (e: React.FocusEvent<HTMLInputElement>) => void;
     unit: string;
     helpText?: string | null;
     min?: number;
@@ -47,7 +48,7 @@ interface NumberInputProps {
     step?: number;
 }
 
-export const NumberInput: React.FC<NumberInputProps> = ({ label, value, onChange, unit, helpText = null, min, max, step }) => (
+export const NumberInput: React.FC<NumberInputProps> = ({ label, value, onChange, onBlur, unit, helpText = null, min, max, step }) => (
     <div className="input-row">
         <label htmlFor={label}>
             {label}
@@ -59,6 +60,7 @@ export const NumberInput: React.FC<NumberInputProps> = ({ label, value, onChange
                 type="number"
                 value={value}
                 onChange={onChange}
+                onBlur={onBlur}
                 min={min}
                 max={max}
                 step={step}
